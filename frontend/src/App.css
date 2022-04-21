@@ -4,6 +4,23 @@
   justify-content: center;
   align-items: center;
   background-color: beige;
+  padding: 20vh;
+}
+
+.InputName {
+  margin-top: 5vh;
+}
+
+.InputAge {
+  margin-top: 2vh;
+  margin-bottom: 1vh;
+}
+
+
+.Meow {
+  font-size: large;
+  padding: 1vh;
+  margin-top: 8vh;
 }
 
 

@@ -3,10 +3,13 @@ import { connect, createInbox, Empty, JSONCodec, StringCodec } from "nats.ws";
 import './App.css';
 
 const sc = StringCodec();
+const jc = JSONCodec();
 
 function App() {
 
   const [nc, setConnection] = useState<any>(undefined);
+  const [nameValue, setName] = useState("");
+  const [ageValue, setAge] = useState("");
 
   useState(() => {
     if(nc === undefined) {
@@ -20,27 +23,28 @@ function App() {
     }
   })
   
-  const state = nc ? "connected" : "not connected"
+  const state = nc ? "Connected" : "Not Connected"
 
   function Meow() {
     nc.publish("cat", sc.encode("meow"));
   };
 
-  useEffect(() => {
-  
-  },[])
+  function InfoSubmit() {
+    nc.publish("info", jc.encode({name: nameValue, age: ageValue}));
+  }
   
   return (
       <div className="App">
-        <div>
-          {state}
-        </div>
+        <h1>{state}</h1>
         <div className="InputName">
-          <input type="text" placeholder="Enter Name"/>
-          <button>Submit</button>
+          <input type="text" placeholder="Enter Name" value={nameValue} onChange={(e) => {setName(e.target.value)}}/>
         </div>
-        <div className="">
-          <button className="CountButton" onClick={() => {Meow()}}>MEOW</button>
+        <div className="InputAge">
+          <input type="number" placeholder="Enter Age" value={ageValue} onChange={(e) => {setAge(e.target.value)}}/>
+        </div>
+        <button onClick={() => {InfoSubmit()}}>Submit</button>
+        <div className="MeowButton">
+          <button className="Meow" onClick={() => {Meow()}}>MEOW =w=</button>
         </div>
       </div>
   );
