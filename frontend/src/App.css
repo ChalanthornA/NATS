@@ -1,10 +1,21 @@
 .App {
-  height: 100vh;
+  font-family:'Courier New', Courier, monospace;
+  height: 60vh;
   text-align: center;
   justify-content: center;
   align-items: center;
   background-color: beige;
   padding: 20vh;
+}
+
+input {
+  height: 22px;
+  width: 200px;
+  padding-left: 10px;
+  padding-right: 10px;
+  border-radius: 20px;
+  border-width: 3px;
+  border-color: bisque;
 }
 
 .InputName {
@@ -16,11 +27,42 @@
   margin-bottom: 1vh;
 }
 
+.SubmitButton {
+  color: aliceblue;
+  padding: 5px;
+  padding-left: 10px;
+  padding-right: 10px;
+  background-color: rgb(236, 182, 100);
+  border-radius: 5px;
+  border: 0;
+}
+
+.SubmitButton:hover {
+  color: rgb(171, 171, 171);
+  background-color: rgb(243, 210, 160);
+}
+
+.Loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 40px;
+}
 
 .Meow {
   font-size: large;
-  padding: 1vh;
+  color: aliceblue;
+  padding: 12px;
   margin-top: 8vh;
+  background-color: palevioletred;
+  border-radius: 15px;
+  border-style: double;
+  border-color: aliceblue;
+  cursor: pointer;
+}
+
+.Meow:hover {
+  background-color: rgb(206, 106, 140);
 }
 
 

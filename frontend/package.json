@@ -14,6 +14,7 @@
     "nats.ws": "^1.7.2",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
+    "react-loading": "^2.0.3",
     "react-scripts": "5.0.1",
     "ts-nats": "^2.0.0-2",
     "typescript": "^4.6.3",

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { connect, createInbox, Empty, JSONCodec, StringCodec } from "nats.ws";
 import './App.css';
+import ReactLoading from 'react-loading';
 
 const sc = StringCodec();
 const jc = JSONCodec();
@@ -8,31 +9,48 @@ const jc = JSONCodec();
 function App() {
 
   const [nc, setConnection] = useState<any>(undefined);
+  const [js, setJetstream] = useState<any>(undefined);
   const [nameValue, setName] = useState("");
   const [ageValue, setAge] = useState("");
+  const [isLoad, setLoad] = useState(false);
+  const [sta, setSta] = useState<any>(null);
 
-  useState(() => {
+  const [catFace, setCatFace] = useState("OwO")
+
+  useEffect(() => {
     if(nc === undefined) {
       connect({servers: ['ws://127.0.0.1:9090']})
         .then((nc) => {
           setConnection(nc);
+          setJetstream(nc.jetstream());
         })
         .catch((err) => {
           console.error(err);
         })
     }
   })
-  
-  const state = nc ? "Connected" : "Not Connected"
 
-  function Meow() {
-    nc.publish("cat", sc.encode("meow"));
+  function sleep(time: any){
+      return new Promise((resolve)=>setTimeout(resolve,time)
+    )
+  }
+
+  
+  const state = nc ? "Connected" : "Not Connected";
+
+  async function Meow() {
+    setCatFace("- w -");
+    nc.publish("prac.cat", sc.encode("meow"));
+    await sleep(150);
+    setCatFace("OwO");
   };
 
-  function InfoSubmit() {
-    nc.publish("info", jc.encode({name: nameValue, age: ageValue}));
+  async function InfoSubmit() {
+    setLoad(true);
+    const m = await js.publish("prac.info", jc.encode({name: nameValue, age: ageValue}));
+    setLoad(false);
   }
-  
+
   return (
       <div className="App">
         <h1>{state}</h1>
@@ -42,9 +60,12 @@ function App() {
         <div className="InputAge">
           <input type="number" placeholder="Enter Age" value={ageValue} onChange={(e) => {setAge(e.target.value)}}/>
         </div>
-        <button onClick={() => {InfoSubmit()}}>Submit</button>
+        <button className="SubmitButton" onClick={() => {InfoSubmit()}}>Submit</button>
+        <div className="Loading">
+          <div className="LaodIcon">{isLoad && (<ReactLoading type="bubbles" color="black" height="50px" width="50px" />)}</div>
+        </div>
         <div className="MeowButton">
-          <button className="Meow" onClick={() => {Meow()}}>MEOW =w=</button>
+          <button className="Meow" onClick={() => {Meow()}}>MEOW ({catFace})</button>
         </div>
       </div>
   );
