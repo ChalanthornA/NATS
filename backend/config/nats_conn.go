@@ -19,6 +19,7 @@ func NatsConn() nats.JetStreamContext{
 	js.AddStream(&nats.StreamConfig{
 		Name:     "Meow",
 		Subjects: []string{"cat"},
+		Retention: nats.WorkQueuePolicy,
 	})
 	js.AddStream(&nats.StreamConfig{
 		Name:     "Info",

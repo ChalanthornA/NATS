@@ -12,6 +12,14 @@ import (
 
 var js nats.JetStreamContext = config.JS
 
+func TestQueueSub(subject string, queueName string){
+	js.QueueSubscribe(subject, queueName, func(msg *nats.Msg){
+		fmt.Println(string(msg.Data))
+	})
+
+	runtime.Goexit()
+}
+
 func TestManualAck(subject string){
 	js.Subscribe(subject, func(msg *nats.Msg){
 		fmt.Printf("%s\n", string(msg.Data))
@@ -30,7 +38,12 @@ func NatsSub(subject string){
 	js.Subscribe("info", func(msg *nats.Msg){
 		user := models.User{}
 		json.Unmarshal(msg.Data, &user)
-		InsertToUserCollection(user)
+		err := InsertToUserCollection(user)
+		if err != nil{
+			// msg.Respond([]byte("Database down."))
+			panic(err)
+		}
+		// msg.Respond([]byte("success"))
 		msg.Ack()
 		fmt.Printf("%+v\n", user)
 	}, nats.Durable("MONITOR"), nats.ManualAck())

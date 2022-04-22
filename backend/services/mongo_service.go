@@ -21,9 +21,7 @@ func InsertToTestCollection(msg string){
 	}
 }
 
-func InsertToUserCollection(userInfo models.User){
+func InsertToUserCollection(userInfo models.User) error{
 	_, err := userCollection.InsertOne(context.TODO(), userInfo)
-	if err != nil{
-		panic(err)
-	}
+	return err
 }
