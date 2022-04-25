@@ -1,9 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { connect, createInbox, Empty, JSONCodec, StringCodec } from "nats.ws";
 import './App.css';
 import ReactLoading from 'react-loading';
-import { AnyMxRecord } from 'dns';
-import { maxHeaderSize } from 'http';
 
 const sc = StringCodec();
 const jc = JSONCodec();
@@ -18,7 +16,6 @@ function App() {
   const [sta, setSta] = useState<any>(null);
 
   const [catFace, setCatFace] = useState("OwO")
-
 
   useEffect(() => {
     if(nc === undefined) {
@@ -41,10 +38,14 @@ function App() {
   const state = nc ? "Connected" : "Not Connected";
 
   async function Meow() {
-    setCatFace("- w -");
-    nc.publish("prac.cat", sc.encode("meow"));
-    await sleep(150);
-    setCatFace("OwO");
+    for (let i=0 ; i<300 ; i++) {
+      setCatFace("- w -");
+      console.log(i);
+      const pub = await nc.publish("prac.cat", sc.encode(`meow #${i}`));
+      await sleep(100);
+      setCatFace("OwO");
+      await sleep(150);
+    }
   };
 
   async function InfoSubmit() {
