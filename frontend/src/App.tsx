@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { connect, createInbox, Empty, JSONCodec, StringCodec } from "nats.ws";
 import './App.css';
 import ReactLoading from 'react-loading';
+import { AnyMxRecord } from 'dns';
+import { maxHeaderSize } from 'http';
 
 const sc = StringCodec();
 const jc = JSONCodec();
@@ -16,6 +18,7 @@ function App() {
   const [sta, setSta] = useState<any>(null);
 
   const [catFace, setCatFace] = useState("OwO")
+
 
   useEffect(() => {
     if(nc === undefined) {
@@ -35,7 +38,6 @@ function App() {
     )
   }
 
-  
   const state = nc ? "Connected" : "Not Connected";
 
   async function Meow() {
@@ -47,7 +49,23 @@ function App() {
 
   async function InfoSubmit() {
     setLoad(true);
-    const m = await js.publish("prac.info", jc.encode({name: nameValue, age: ageValue}));
+    const subInbox = createInbox();
+    const sub = nc.subscribe(subInbox, {
+      callback: (err: any, msg: any) => {
+        if (err) {
+          console.log(err.message);
+        }
+        else {
+          alert(sc.decode(msg.data));
+        }
+      },
+      max: 1,
+    })
+    const pub = await js.publish("prac.info", jc.encode({name: nameValue, age: ageValue, reply: subInbox}));
+    for await (const m of sub) {
+      console.log("subscription closed: ", sc.decode(m.data));
+      sub.close;
+    }
     setLoad(false);
   }
 
