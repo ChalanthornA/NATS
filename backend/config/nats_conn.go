@@ -3,17 +3,30 @@ package config
 import (
 	"fmt"
 	"log"
-
+	
 	"github.com/nats-io/nats.go"
 )
 
-var NC *nats.Conn = NatsConn()
+var JS nats.JetStreamContext = NatsConn()
 
-func NatsConn() *nats.Conn{
+func NatsConn() nats.JetStreamContext{
 	nc, err := nats.Connect(nats.DefaultURL)
 	if err != nil{
 		log.Fatal(err)
 	}
-	fmt.Printf("connect to %s\n", nats.DefaultURL)
-	return nc
+	fmt.Printf("Connect to %s\n", nats.DefaultURL)
+	js, _ := nc.JetStream()
+	js.AddStream(&nats.StreamConfig{
+		Name:     "Meow",
+		Subjects: []string{"cat"},
+		Retention: nats.WorkQueuePolicy,
+	})
+	js.AddStream(&nats.StreamConfig{
+		Name:     "Info",
+		Subjects: []string{"info"},
+	})
+	js.AddConsumer("Meow", &nats.ConsumerConfig{
+		Durable: "MONITOR",
+	})
+	return js
 }

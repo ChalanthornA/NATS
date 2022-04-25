@@ -1,11 +1,11 @@
 package main
 
 import (
-	"backend/config"
 	"backend/services"
 )
 
 func main(){
-	services.NatsSub("p.p")
-	defer config.NC.Close()
+	// services.TestQueueSub("cat", "q")
+	// services.TestManualAck("cat")
+	services.NatsSub("cat")
 }
