@@ -61,11 +61,9 @@ function App() {
       },
       max: 1,
     })
+    console.log("inbox: ",subInbox)
     const pub = await js.publish("prac.info", jc.encode({name: nameValue, age: ageValue, reply: subInbox}));
-    for await (const m of sub) {
-      console.log("subscription closed: ", sc.decode(m.data));
-      sub.close;
-    }
+    sub.unsubscribe(1);
     setLoad(false);
   }
 
